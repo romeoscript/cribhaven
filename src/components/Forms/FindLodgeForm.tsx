@@ -5,6 +5,7 @@ import { FormValues } from './types';
 import PersonalInfoForm from './PersonalInfoForm';
 import PreferencesForm from './PreferencesForm';
 import SuccessStep from './SuccessStep';
+import logo from '../../assets/home/logo.svg';
 
 const { Step } = Steps;
 
@@ -62,7 +63,7 @@ export const FindLodgeForm = () => {
   return (
     <div className="max-w-2xl mx-auto p-8 bg-white rounded-xl shadow-lg">
       <div className="text-center mb-8">
-        <img src="/logo.png" alt="Crib Haven" className="h-10 mx-auto mb-6" />
+        <img src={logo} alt="Crib Haven" className="h-10 mx-auto mb-6" />
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
           Find Your Perfect Lodge
         </h2>
