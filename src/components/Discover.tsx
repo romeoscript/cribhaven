@@ -1,6 +1,10 @@
 import { useState, useRef } from 'react';
 import { IoChevronForwardOutline, IoChevronBackOutline } from "react-icons/io5";
 import PropertyCard from './PropertyCard';
+import prop1 from '../assets/properties/prop1.svg'
+import prop2 from '../assets/properties/prop2.svg'
+import prop3 from '../assets/properties/prop3.svg'
+import prop4 from '../assets/properties/prop4.svg'
 
 interface Property {
   id: number;
@@ -19,7 +23,7 @@ const DiscoverSection = () => {
   const properties: Property[] = [
     {
       id: 1,
-      image: "https://placehold.co/600x400",
+      image: prop1,
       title: "Vista Heights",
       location: "UNI ENUGU",
       beds: 1,
@@ -28,7 +32,7 @@ const DiscoverSection = () => {
     },
     {
       id: 2,
-      image: "https://placehold.co/600x400",
+      image: prop2,
       title: "Parkside Whispering Oaks",
       location: "UNIZIK",
       beds: 1,
@@ -37,7 +41,7 @@ const DiscoverSection = () => {
     },
     {
       id: 3,
-      image: "https://placehold.co/600x400",
+      image: prop3,
       title: "Summit View Cityscape",
       location: "Salt Lake City, UGH",
       beds: 1,

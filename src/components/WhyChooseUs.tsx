@@ -1,5 +1,5 @@
 
-
+import prop4 from '../assets/home/home4.svg'
 const WhyChooseUs = () => {
   return (
     <section className="w-full py-20">
@@ -8,7 +8,7 @@ const WhyChooseUs = () => {
           {/* Image Container */}
           <div className="relative h-[600px] rounded-2xl overflow-hidden">
             <img
-              src="https://placehold.co/600x500" // Replace with your actual image
+              src={prop4} // Replace with your actual image
               alt="Luxury Building"
               className="w-full h-full object-cover rounded-2xl"
             />

@@ -5,13 +5,17 @@ import PropertyCategories from '../components/PropertyCategories'
 import DiscoverSection from '../components/Discover'
 import FAQAccordion from '../components/FAQAccordion'
 import WhyChooseUs from '../components/WhyChooseUs'
+import prop1 from '../assets/properties/prop1.svg'
+import prop2 from '../assets/properties/prop2.svg'
+import prop3 from '../assets/properties/prop3.svg'
+import prop4 from '../assets/properties/prop4.svg'
 
 
 const Homepage = () => {
   const properties = [
     {
       id: 1,
-      image: "https://placehold.co/400x240",
+      image: prop1,
       title: "Harbor View",
       location: "UNI UYO",
       beds: 3,
@@ -20,7 +24,7 @@ const Homepage = () => {
     },
     {
       id: 4,
-      image: "https://placehold.co/400x240",
+      image: prop2,
       title: "Sunset Ridge",
       location: "RUST",
       beds: 1,
@@ -29,7 +33,7 @@ const Homepage = () => {
     },
     {
       id: 5,
-      image: "https://placehold.co/400x240",
+      image: prop3,
       title: "Royal Gardens Villas",
       location: "UNN",
       beds: 2,
@@ -38,7 +42,7 @@ const Homepage = () => {
     },
     {
       id: 6,
-      image: "https://placehold.co/400x240",
+      image: prop4,
       title: "Royal Gardens Villas",
       location: "UNN",
       beds: 2,
@@ -47,7 +51,7 @@ const Homepage = () => {
     },
     {
       id: 7,
-      image: "https://placehold.co/400x240",
+      image: prop3,
       title: "Royal Gardens Villas",
       location: "UNN",
       beds: 2,

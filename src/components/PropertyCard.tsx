@@ -19,7 +19,7 @@ const PropertyCard = ({ image, title, location, beds, baths, price }: PropertyCa
         <img 
           src={image} 
           alt={title} 
-          className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+          className="w-full rounded-2xl h-full object-cover transition-transform duration-300 hover:scale-110"
         />
       </div>
 

@@ -1,4 +1,6 @@
-
+import home1 from "../assets/home/home1.svg";
+import home2 from "../assets/home/home2.svg";
+import home3 from "../assets/home/home3.svg";
 interface CategoryCard {
   title: string;
   image: string;
@@ -8,11 +10,11 @@ const PropertyCategories = () => {
   const categories: CategoryCard[] = [
     {
       title: "Penthouse",
-      image: "https://placehold.co/600x400" 
+      image: home1
     },
     {
       title: "Rented Apartment",
-      image: "https://placehold.co/600x400" 
+      image: home2
     }
   ];
 
@@ -53,7 +55,7 @@ const PropertyCategories = () => {
           {/* Right Column */}
           <div className="relative h-[720px] rounded-2xl overflow-hidden group mt-6 md:mt-0">
             <img 
-              src="https://placehold.co/600x720"
+              src={home3}
               alt="Luxury Apartment"
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             />
