@@ -4,7 +4,7 @@ import PropertyCard from './PropertyCard';
 import prop1 from '../assets/properties/prop1.svg'
 import prop2 from '../assets/properties/prop2.svg'
 import prop3 from '../assets/properties/prop3.svg'
-import prop4 from '../assets/properties/prop4.svg'
+
 
 interface Property {
   id: number;
