@@ -8,7 +8,7 @@ const WhyChooseUs = () => {
           {/* Image Container */}
           <div className="relative h-[600px] rounded-2xl overflow-hidden">
             <img
-              src={prop4} // Replace with your actual image
+              src={prop4} 
               alt="Luxury Building"
               className="w-full h-full object-cover rounded-2xl"
             />
