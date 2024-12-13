@@ -1,73 +1,84 @@
 import { useState } from 'react';
-import { IoChevronDown } from "react-icons/io5";
-import { IoChevronUp } from "react-icons/io5";
-// import { ChevronDown, ChevronUp } from 'lucide-react';
-
-interface FAQItem {
-  question: string;
-  answer: string;
-}
+import { motion, AnimatePresence } from 'framer-motion';
+import { Plus } from 'lucide-react';
 
 const FAQAccordion = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   
-  const faqs: FAQItem[] = [
+  const faqs = [
     {
-      question: "Why is Emmanuel so good at UI/UX design?",
-      answer: "Emmanuel's has always had the curiosity to explore, build and think outside the box. He always finds a reason to pursue his passions and desires, regardless of how they appear to others."
+      question: "How Does CribHaven Ensure Listings Are Verified?",
+      answer: "Our verification process includes thorough checks of property documentation, owner credentials, and physical verification of listed properties. We also collect and verify landlord information and maintain updated property records."
     },
     {
-      question: "Why is Emmanuel so good at UI/UX design?",
-      answer: "Emmanuel brings a unique perspective to design challenges and consistently delivers innovative solutions."
+      question: "Can I Schedule Virtual Tours?",
+      answer: "Yes, you can schedule virtual tours through our platform. Simply select the 'Virtual Tour' option on any listing and choose your preferred time slot. Our team will coordinate with the property owner to facilitate the virtual viewing."
     },
     {
-      question: "Why is Emmanuel so good at UI/UX design?",
-      answer: "His combination of technical skills and creative vision allows him to excel in UI/UX design."
+      question: "What Are the Payment Options?",
+      answer: "We offer multiple secure payment options including bank transfers, credit/debit cards, and digital wallets. All transactions are processed through our secure payment gateway with transparent fee structures."
     },
     {
-      question: "Why is Emmanuel so good at UI/UX design?",
-      answer: "Through continuous learning and experimentation, Emmanuel has developed a strong foundation in design principles."
+      question: "Is There a Fee for Using CribHaven?",
+      answer: "CribHaven is free to use for property browsing and searching. We only charge a small service fee when you successfully book a property through our platform. There are no hidden charges or subscription fees."
     }
   ];
 
   return (
-    <div className="max-w-[1440px] mx-auto p-6">
-      <div className="bg-white rounded-lg">
-        <div className="mb-8">
-          <div className="flex justify-around items-center">
-          <h2 className="text-2xl font-bold mt-4 mb-6">Frequently Asked Questions</h2>
-            <span className="text-white bg-[#1D1C1C] px-4 py-2 rounded-[10px]">Contact Us</span>
-          </div>
-         
-        </div>
-        
-        <div className="space-y-4 max-w-4xl mx-auto overflow-y-auto">
+    <div className="w-full bg-white py-16 px-4">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-3xl mx-auto"
+      >
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+          Frequently Asked Questions
+        </h2>
+
+        <div className="space-y-4">
           {faqs.map((faq, index) => (
-            <div
+            <motion.div
               key={index}
-              className="border border-gray-200 rounded-lg overflow-hidden"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="rounded-xl border-2 border-green-100 overflow-hidden"
             >
               <button
-                className="w-full px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition-colors"
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                className="w-full px-6 py-4 flex justify-between items-center text-left hover:bg-gray-50 transition-colors"
               >
-                <span className="text-left font-medium">{faq.question}</span>
-                {openIndex === index ? (
-                  <IoChevronUp className="h-5 w-5 text-gray-500" />
-                ) : (
-                  <IoChevronDown className="h-5 w-5 text-gray-500" />
-                )}
+                <span className="font-medium text-lg text-gray-900">
+                  {faq.question}
+                </span>
+                <motion.div
+                  animate={{ rotate: openIndex === index ? 45 : 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex-shrink-0 ml-4"
+                >
+                  <Plus className="w-6 h-6 text-green-500" />
+                </motion.div>
               </button>
-              
-              {openIndex === index && (
-                <div className="px-6 py-4 bg-gray-50">
-                  <p className="text-gray-600">{faq.answer}</p>
-                </div>
-              )}
-            </div>
+
+              <AnimatePresence>
+                {openIndex === index && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="px-6 py-4 bg-white border-t border-green-100"
+                  >
+                    <p className="text-gray-600">
+                      {faq.answer}
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

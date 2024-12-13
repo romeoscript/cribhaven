@@ -1,149 +1,115 @@
-import { FaFacebookF, FaTwitter, FaLinkedinIn, FaInstagram } from 'react-icons/fa';
-import footerimg from '../assets/home/footerimg.svg';
-import logo from '../assets/home/logo.svg';
+import logo from '../assets/properties/logo-white.svg';
+import find from '../assets/properties/find.jpeg';
+import { motion } from 'framer-motion';
+import { Facebook, Instagram, Linkedin, Twitter } from 'lucide-react';
 
-const NewsletterSection = () => {
+const CTAandFooter = () => {
   return (
-    <div className="w-full h-[400px] bg-[#4CA32F] flex  rounded-3xl overflow-hidden relative">
-      <div className="max-w-[1240px]  px-6 py-12 flex flex-col md:flex-row items-center justify-between">
-        <div className="max-w-xl mb-8 md:mb-0 flex flex-col gap-8">
-          <aside>
-            <h2 className="text-2xl font-bold text-white mb-2">
-              Unlock Exclusive Apartment Insights!
+    <>
+      {/* CTA Section */}
+      <motion.div 
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        className="relative w-full max-w-6xl mx-auto px-4 py-8"
+      >
+        <div className="relative rounded-2xl overflow-hidden">
+          <div className="absolute inset-0 bg-black/40 z-10" />
+          <img 
+            src={find} 
+            alt="Students" 
+            className="w-full h-[400px] object-cover"
+          />
+          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-white text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Ready to Find Your Perfect Home?
             </h2>
-            <p className="text-white/90">
-              Get exclusive real estate insights delivered straight to your inbox. Sign up now for the latest property listings, market trends, and expert advice!
-            </p>
-          </aside>
-          <aside>
-            <div className="relative z-10 w-full md:w-auto">
-              <div className="flex max-w-md mx-auto md:mx-0 bg-white p-[0.2rem] rounded-lg">
-                <input
-                  type="email"
-                  placeholder="Enter your email address"
-                  className="flex-1 px-4  rounded-lg focus:outline-none focus:outline-none "
-                />
-                <button className="px-6 py-3 bg-green-700 text-white rounded-lg hover:bg-green-800 transition-colors duration-300">
-                  Subscribe
-                </button>
+            <p className="text-xl mb-6">Start Now!!!</p>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-green-500 text-white px-8 py-3 rounded-full font-medium"
+            >
+              Get Started
+            </motion.button>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Footer */}
+      <footer className="bg-[#1A1730] text-white mt-16 px-4 py-12">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+            {/* Logo and Description */}
+            <div className="col-span-1 md:col-span-1">
+              <img src={logo} alt="CribHaven Logo" className="mb-4" />
+              <p className="text-sm text-gray-300 mb-4">
+                Explore verified listings with no agent fees and secure payments. Your perfect student housing is just a click away!
+              </p>
+              <div className="flex space-x-4">
+                <a href="#" className="text-white hover:text-green-500">
+                  <Facebook className="w-5 h-5" />
+                </a>
+                <a href="#" className="text-white hover:text-green-500">
+                  <Instagram className="w-5 h-5" />
+                </a>
+                <a href="#" className="text-white hover:text-green-500">
+                  <Twitter className="w-5 h-5" />
+                </a>
+                <a href="#" className="text-white hover:text-green-500">
+                  <Linkedin className="w-5 h-5" />
+                </a>
               </div>
             </div>
-          </aside>
-        </div>
 
-        {/* Building Image - Absolute positioned */}
-        <div className="absolute right-0 bottom-0 w-1/3 h-full opacity-20 md:opacity-100">
-          <img
-            src={footerimg}
-            alt="Buildings"
-            className="h-full object-cover object-left"
-          />
-        </div>
-
-        {/* Subscribe Form */}
-
-      </div>
-    </div>
-  );
-};
-
-const Footer = () => {
-  const footerLinks = {
-    Company: [
-      { label: 'About Us', href: '#' },
-      { label: 'Terms of service', href: '#' },
-      { label: 'Blog', href: '#' }
-    ],
-    Resources: [
-      { label: 'FAQ', href: '#' },
-      { label: 'Career', href: '#' },
-      { label: 'Videos', href: '#' },
-      { label: 'Our Homes', href: '#' }
-    ],
-    'Contact Us': []
-  };
-
-  return (
-    <footer className="w-full py-16 px-6">
-      <div className="max-w-[1440px] mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-          {/* Logo Column */}
-          <div>
-            <img src={logo} alt="Crib Haven"  />
-          </div>
-
-          {/* Links Columns */}
-          {Object.entries(footerLinks).map(([title, links]) => (
-            <div key={title}>
-              <h3 className="font-semibold mb-4">{title}</h3>
-              <ul className="space-y-3">
-                {links.map((link) => (
-                  <li key={link.label}>
-                    <a
-                      href={link.href}
-                      className="text-gray-600 hover:text-gray-900 transition-colors duration-300"
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
+            {/* Quick Links */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+              <ul className="space-y-2">
+                <li><a href="#" className="text-gray-300 hover:text-white">Home</a></li>
+                <li><a href="#" className="text-gray-300 hover:text-white">Features</a></li>
+                <li><a href="#" className="text-gray-300 hover:text-white">How it Works</a></li>
+                <li><a href="#" className="text-gray-300 hover:text-white">Why Choose Us</a></li>
+                <li><a href="#" className="text-gray-300 hover:text-white">FAQs</a></li>
               </ul>
             </div>
-          ))}
-        </div>
 
-        {/* Bottom Section */}
-        <div className="mt-12 pt-8 border-t border-gray-200">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-gray-600 mb-4 md:mb-0">
-              © 2024 Hello Crib Haven
-            </p>
-
-            {/* Social Links */}
-            <div className="flex space-x-6">
-              <a href="#" className="text-gray-600 hover:text-gray-900">
-                <FaInstagram size={20} />
-              </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900">
-                <FaFacebookF size={20} />
-              </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900">
-                <FaTwitter size={20} />
-              </a>
-              <a href="#" className="text-gray-600 hover:text-gray-900">
-                <FaLinkedinIn size={20} />
-              </a>
+            {/* Contact Us */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
+              <ul className="space-y-2">
+                <li className="flex items-center text-gray-300">
+                  <span>📧</span>
+                  <a href="mailto:support@cribhaven.com" className="ml-2 hover:text-white">
+                    support@cribhaven.com
+                  </a>
+                </li>
+                <li className="flex items-center text-gray-300">
+                  <span>📞</span>
+                  <a href="tel:+2348025892569" className="ml-2 hover:text-white">
+                    +234 802 589 2569
+                  </a>
+                </li>
+                <li className="flex items-center text-gray-300">
+                  <span>📍</span>
+                  <span className="ml-2">Port Harcourt</span>
+                </li>
+              </ul>
             </div>
+          </div>
 
-            {/* Legal Links */}
-            <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="#" className="text-sm text-gray-600 hover:text-gray-900">
-                Privacy
-              </a>
-              <a href="#" className="text-sm text-gray-600 hover:text-gray-900">
-                Terms of Agreement
-              </a>
-              <a href="#" className="text-sm text-gray-600 hover:text-gray-900">
-                Licenses
-              </a>
+          {/* Footer Bottom */}
+          <div className="pt-8 border-t border-gray-700 text-center text-sm text-gray-400">
+            <p>© Copyright 2024. All Rights Reserved by CribHaven</p>
+            <div className="flex justify-center space-x-4 mt-2">
+              <a href="#" className="hover:text-white">Privacy policy</a>
+              <a href="#" className="hover:text-white">Terms of Service</a>
+              <a href="#" className="hover:text-white">Contact Us</a>
             </div>
           </div>
         </div>
-      </div>
-    </footer>
+      </footer>
+    </>
   );
 };
 
-// Combine both components
-const FooterWithNewsletter = () => {
-  return (
-    <div className="space-y-16 bg-white">
-      <div className="max-w-[1440px] mx-auto px-6">
-        <NewsletterSection />
-      </div>
-      <Footer />
-    </div>
-  );
-};
-
-export default FooterWithNewsletter;
+export default CTAandFooter;
