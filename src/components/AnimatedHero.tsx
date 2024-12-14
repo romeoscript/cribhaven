@@ -78,7 +78,7 @@ const AnimatedHero = () => {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 }}
-            className="absolute -left-6 top-16 bg-white rounded-xl shadow-lg px-4 py-2 flex items-center gap-2 z-10"
+            className="absolute -left-6 top-16 bg-white rounded-xl shadow-lg px-4 py-2 flex items-center gap-2 z-10 max-md:hidden"
           >
             <span className="text-green-600 font-bold text-2xl">✗</span>
             <span className="font-medium">No Agent Fees</span>
@@ -88,7 +88,7 @@ const AnimatedHero = () => {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.6 }}
-            className="absolute left-12 -bottom-4 bg-white rounded-xl shadow-lg px-4 py-2 flex items-center gap-2 z-10"
+            className="absolute left-12 -bottom-4 bg-white rounded-xl shadow-lg px-4 py-2 flex items-center gap-2 z-10 max-md:hidden"
           >
             <div className="bg-purple-100 p-1 rounded">
               <span role="img" aria-label="support" className="text-purple-600">💬</span>
@@ -100,7 +100,7 @@ const AnimatedHero = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.8 }}
-            className="absolute -right-6 top-16 bg-white rounded-xl shadow-lg px-4 py-2 flex items-center gap-2 z-10"
+            className="absolute -right-6 top-16 bg-white rounded-xl shadow-lg px-4 py-2 flex items-center gap-2 z-10 max-md:hidden"
           >
             <div className="flex -space-x-2">
               <img src={lady1} alt="avatar" className="w-6 h-6 rounded-full border-2 border-white" />
