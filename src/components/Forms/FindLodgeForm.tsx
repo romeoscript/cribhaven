@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Form } from 'antd';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -6,23 +5,28 @@ import PersonalInfoForm from './PersonalInfoForm';
 import PreferencesForm from './PreferencesForm';
 import { CheckCircle } from 'lucide-react';
 import logo from '../../assets/home/logo.svg';
+
 export const FindLodgeForm = () => {
   const [form] = Form.useForm();
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const steps = [
     {
       title: 'Personal Info',
-      content: <PersonalInfoForm form={form}/>
+      content: <PersonalInfoForm form={form} />
     },
     {
       title: 'Preferences',
-      content: <PreferencesForm form={form}/>
+      content: <PreferencesForm form={form} />
     }
   ];
 
-  const next = async () => {
+  const list_id = import.meta.env.VITE_LODGE_LIST_ID;
+
+  const next = async (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent form submission on continue
     try {
       if (currentStep === 0) {
         await form.validateFields([
@@ -47,18 +51,68 @@ export const FindLodgeForm = () => {
     }
   };
 
-  const prev = () => {
+  const prev = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent form submission on back
     setCurrentStep(currentStep - 1);
   };
 
   const onFinish = async (values: any) => {
-    console.log('Form values:', values);
+    setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Get the current form values directly
+      const personalInfo = await form.validateFields([
+        'firstName',
+        'lastName',
+        'email',
+        'phone',
+        'gender'
+      ]);
+      
+      console.log('Personal Info:', personalInfo);
+      console.log('Preferences:', values);
+      
+      const formData = new FormData();
+  
+      // Add personal info fields from the first step
+      formData.append('field[FirstName]', personalInfo.firstName || '');
+      formData.append('field[LastName]', personalInfo.lastName || '');
+      formData.append('email_address', personalInfo.email || '');
+      formData.append('field[Phone]', personalInfo.phone || '');
+      formData.append('field[Gender]', personalInfo.gender || '');
+  
+      // Add preferences from the second step
+      formData.append('field[Location]', values.location || '');
+      formData.append('field[Budget]', values.budget || '');
+      formData.append('field[RoomType]', values.roomType || '');
+      formData.append('field[Requirements]', values.requirements?.join(', ') || 'None');
+  
+      // Debug log
+      for (let pair of formData.entries()) {
+        console.log('FormData entry:', pair[0], pair[1]);
+      }
+  
+      const response = await fetch(
+        `https://emailoctopus.com/lists/${list_id}/members/embedded/1.3/add`,
+        {
+          method: 'POST',
+          body: formData,
+          headers: {
+            accept: 'application/json',
+          },
+        }
+      );
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Response error:', errorData);
+        throw new Error('Subscription failed');
+      }
+  
       setIsSubmitted(true);
     } catch (error) {
       console.error('Submission failed:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -120,6 +174,7 @@ export const FindLodgeForm = () => {
               <div className="flex justify-between mt-8">
                 {currentStep > 0 && (
                   <button
+                    type="button"
                     onClick={prev}
                     className="px-6 py-2 border rounded-lg hover:bg-gray-50 transition-colors"
                   >
@@ -127,10 +182,19 @@ export const FindLodgeForm = () => {
                   </button>
                 )}
                 <button
+                  type="button"
                   onClick={next}
-                  className="ml-auto px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                  disabled={isLoading}
+                  className={`ml-auto px-6 py-2 ${
+                    isLoading ? 'bg-gray-400' : 'bg-green-500 hover:bg-green-600'
+                  } text-white rounded-lg transition-colors`}
                 >
-                  {currentStep === steps.length - 1 ? 'Submit' : 'Continue'}
+                  {isLoading 
+                    ? 'Processing...' 
+                    : currentStep === steps.length - 1 
+                    ? 'Submit' 
+                    : 'Continue'
+                  }
                 </button>
               </div>
             </Form>
