@@ -1,10 +1,23 @@
-import { Form, Input, Select } from 'antd';
+import React from 'react';
+import { Form, Input, Select, FormInstance } from 'antd';
 import { HiOutlineUser, HiOutlineMail, HiOutlinePhone } from 'react-icons/hi';
 
-const PersonalInfoForm = () => {
+interface PersonalInfoFormProps {
+  form?: FormInstance;
+}
+
+interface FormValues {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  gender: 'male' | 'female';
+}
+
+const PersonalInfoForm: React.FC<PersonalInfoFormProps> = () => {
   return (
     <div className="space-y-4">
-      <Form.Item
+      <Form.Item<FormValues>
         name="firstName"
         label="First Name"
         rules={[{ required: true, message: 'Please enter your first name' }]}
@@ -15,7 +28,7 @@ const PersonalInfoForm = () => {
         />
       </Form.Item>
 
-      <Form.Item
+      <Form.Item<FormValues>
         name="lastName"
         label="Last Name"
         rules={[{ required: true, message: 'Please enter your last name' }]}
@@ -26,7 +39,7 @@ const PersonalInfoForm = () => {
         />
       </Form.Item>
 
-      <Form.Item
+      <Form.Item<FormValues>
         name="email"
         label="Email"
         rules={[
@@ -40,7 +53,7 @@ const PersonalInfoForm = () => {
         />
       </Form.Item>
 
-      <Form.Item
+      <Form.Item<FormValues>
         name="phone"
         label="Phone"
         rules={[
@@ -54,7 +67,7 @@ const PersonalInfoForm = () => {
         />
       </Form.Item>
 
-      <Form.Item
+      <Form.Item<FormValues>
         name="gender"
         label="Gender"
         rules={[{ required: true, message: 'Please select your gender' }]}
@@ -68,5 +81,4 @@ const PersonalInfoForm = () => {
   );
 };
 
-
-export default PersonalInfoForm
+export default PersonalInfoForm;

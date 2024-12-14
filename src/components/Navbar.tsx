@@ -49,7 +49,7 @@ const Navbar = () => {
     <motion.div 
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className="bg-white w-full fixed left-0 top-0 z-[100000] shadow-sm"
+      className="bg-white w-full fixed left-0 top-0 z-[1000] shadow-sm"
     >
       <nav className="max-w-6xl mx-auto py-4 px-8 flex items-center justify-between">
         {/* Logo */}

@@ -1,13 +1,42 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
+import Modal from './Modal';
 import hero from '../assets/home/hero.svg';
-import lady1 from '../assets/People/lady1.svg'
-import lady2 from '../assets/People/lady2.svg'
-import lady3 from '../assets/People/lady3.svg'
+import lady1 from '../assets/People/lady1.svg';
+import lady2 from '../assets/People/lady2.svg';
+import lady3 from '../assets/People/lady3.svg';
+import { FindLodgeForm } from './Forms/FindLodgeForm';
 
 const AnimatedHero = () => {
+  const [activeModal, setActiveModal] = useState<string | null>(null);
+
+  const buttons = [
+    {
+      id: 'find-lodge',
+      text: 'Find Lodge',
+      color: 'bg-green-500',
+      hoverColor: 'hover:bg-green-600',
+      delay: 0.2
+    },
+    {
+      id: 'find-roommate',
+      text: 'Find Roommate',
+      color: 'bg-blue-500',
+      hoverColor: 'hover:bg-blue-600',
+      delay: 0.3
+    },
+    {
+      id: 'list-lodge',
+      text: 'List Your Lodge',
+      color: 'bg-purple-500',
+      hoverColor: 'hover:bg-purple-600',
+      delay: 0.4
+    }
+  ];
+
+
   return (
     <div className="relative w-full bg-[#F8F3ED] px-4 py-16" id="home">
-  
       <div className="max-w-6xl mx-auto">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -23,18 +52,28 @@ const AnimatedHero = () => {
             Your perfect student housing is just a click away!
           </p>
 
-          <motion.button 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-green-500 text-white px-12 py-3 rounded-full text-lg font-medium"
-          >
-            Get Started
-          </motion.button>
+          {/* Animated Buttons Container */}
+          <div className="flex flex-col sm:flex-row justify-center gap-4 mb-8">
+            {buttons.map((button) => (
+              <motion.button
+                key={button.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: button.delay }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setActiveModal(button.id)}
+                className={`${button.color} ${button.hoverColor} text-white px-8 py-3 rounded-full text-lg font-medium transition-colors`}
+              >
+                {button.text}
+              </motion.button>
+            ))}
+          </div>
         </motion.div>
 
         {/* Main Image Section with Floating Badges */}
         <div className="relative max-w-4xl mx-auto mt-12">
-          {/* No Agent Fees Badge */}
+          {/* Badges remain the same... */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -45,7 +84,6 @@ const AnimatedHero = () => {
             <span className="font-medium">No Agent Fees</span>
           </motion.div>
 
-          {/* 24/7 Support Badge */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -58,7 +96,6 @@ const AnimatedHero = () => {
             <span className="font-medium">24/7 Support</span>
           </motion.div>
 
-          {/* Trusted Landlords Badge */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -73,7 +110,6 @@ const AnimatedHero = () => {
             <span className="font-medium">Trusted Landlords</span>
           </motion.div>
 
-          {/* Main Image Container */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -88,6 +124,15 @@ const AnimatedHero = () => {
           </motion.div>
         </div>
       </div>
+
+      {/* Modals */}
+      {activeModal && (
+        <Modal isOpen={true} onClose={() => setActiveModal(null)}>
+   
+            <FindLodgeForm />
+
+        </Modal>
+      )}
     </div>
   );
 };
