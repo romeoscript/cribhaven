@@ -90,15 +90,30 @@ export const FindLodgeForm = () => {
       for (let pair of formData.entries()) {
         console.log('FormData entry:', pair[0], pair[1]);
       }
-  
+
       const response = await fetch(
-        `https://emailoctopus.com/lists/${list_id}/members/embedded/1.3/add`,
+        `https://emailoctopus.com/api/1.6/lists/2902da60-b9d0-11ef-9e1a-0dfc70907a13/contacts`,
         {
-          method: 'POST',
-          body: formData,
           headers: {
-            accept: 'application/json',
+            "Content-Type": "application/json",
           },
+          method: 'POST',
+          body: JSON.stringify({
+            api_key: 'eo_9ec1a19489b56b9baaf07b06a83ad49bc604cc0575ff1f045f5aa8325bcdbd31',
+            email_address: 'romeobourne211@gmail.com',
+            fields: {
+              EmailAddress: "romeobourne211@gmail.com",
+              FirstName: 'shit',
+              LastName: 'romeoscript',
+              // SelectedCourse: selectedCourse,
+              // HowYouHeard: knowlegeOfTechyJaunt,
+              // PhoneNumber: phoneNumber,
+              // Gender: gender,
+            },
+            // tags: ["people"],
+            status: "SUBSCRIBED",
+          }),
+    
         }
       );
   

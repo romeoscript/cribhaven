@@ -7,18 +7,18 @@ interface PersonalInfoFormProps {
 }
 
 interface FormValues {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  gender: 'male' | 'female';
+  FirstName: string;
+  LastName: string;
+  EmailAddress: string;
+  PhoneNumber: string;
+  Gender: 'male' | 'female';
 }
 
 const PersonalInfoForm: React.FC<PersonalInfoFormProps> = () => {
   return (
     <div className="space-y-4">
       <Form.Item<FormValues>
-        name="firstName"
+        name="FirstName"
         label="First Name"
         rules={[{ required: true, message: 'Please enter your first name' }]}
       >
@@ -29,7 +29,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = () => {
       </Form.Item>
 
       <Form.Item<FormValues>
-        name="lastName"
+        name="LastName"
         label="Last Name"
         rules={[{ required: true, message: 'Please enter your last name' }]}
       >
@@ -40,7 +40,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = () => {
       </Form.Item>
 
       <Form.Item<FormValues>
-        name="email"
+        name="EmailAddress"
         label="Email"
         rules={[
           { required: true, message: 'Please enter your email' },
@@ -54,7 +54,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = () => {
       </Form.Item>
 
       <Form.Item<FormValues>
-        name="phone"
+        name="PhoneNumber"
         label="Phone"
         rules={[
           { required: true, message: 'Please enter your phone number' },
@@ -68,7 +68,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = () => {
       </Form.Item>
 
       <Form.Item<FormValues>
-        name="gender"
+        name="Gender"
         label="Gender"
         rules={[{ required: true, message: 'Please select your gender' }]}
       >

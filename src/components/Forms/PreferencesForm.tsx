@@ -7,9 +7,9 @@ interface PreferencesFormProps {
 }
 
 interface FormValues {
-  location: string;
-  budget: string;
-  roomType: 'single' | 'selfcon' | 'flat';
+  Location: string;
+  Budget: string;
+  RoomType: 'single' | 'selfcon' | 'flat';
   requirements: string[];
 }
 
@@ -17,19 +17,19 @@ const PreferencesForm: React.FC<PreferencesFormProps> = () => {
   return (
     <div className="space-y-4">
       <Form.Item<FormValues>
-        name="location"
-        label="Location (Close to UNEC)"
-        tooltip="Enter an area or landmark close to UNEC"
+        name="Location"
+        label="Location "
+        tooltip="Enter an area or landmark"
         rules={[{ required: true, message: 'Please enter your preferred location' }]}
       >
         <Input 
           prefix={<HiOutlineLocationMarker className="text-gray-400" />} 
-          placeholder="E.g., Behind UNEC, Close to Carmel City, Near UNEC Gate" 
+          placeholder="E.g., College road, maryland," 
         />
       </Form.Item>
-
+{/* TODO turn to an input field  */}
       <Form.Item<FormValues>
-        name="budget"
+        name="Budget"
         label="Yearly Budget Range"
         rules={[{ required: true, message: 'Please select your budget range' }]}
       >
@@ -44,7 +44,7 @@ const PreferencesForm: React.FC<PreferencesFormProps> = () => {
       </Form.Item>
 
       <Form.Item<FormValues>
-        name="roomType"
+        name="RoomType"
         label="Type of Lodge"
         rules={[{ required: true, message: 'Please select lodge type' }]}
       >
