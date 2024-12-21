@@ -76,7 +76,9 @@ export const FindLodgeForm = () => {
         location: allValues.Location || '',
         budget: allValues.Budget || '',
         roomType: allValues.RoomType || '',
-        requirements: allValues.requirements?.join(', ') || ''
+        requirements: typeof allValues.requirements === 'string' 
+        ? allValues.requirements 
+        : allValues.requirements?.join(', ') || ''
       };
   
       console.log('PAYLOAD:', payload);
@@ -216,14 +218,14 @@ export const FindLodgeForm = () => {
               Expect a call or email from our agent within 24 hours with the best options for you.
             </p>
             
-            <motion.button
+            {/* <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => window.location.href = '/available-lodges'}
               className="bg-green-500 text-white px-8 py-3 rounded-lg hover:bg-green-600 transition-colors"
             >
               Browse Available Lodges
-            </motion.button>
+            </motion.button> */}
           </motion.div>
         )}
       </AnimatePresence>

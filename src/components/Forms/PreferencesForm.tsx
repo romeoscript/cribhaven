@@ -1,6 +1,10 @@
 import React from 'react';
-import { Form, Input, Select, Radio, FormInstance } from 'antd';
-import { HiOutlineLocationMarker } from 'react-icons/hi';
+import { Form, Input, Radio, FormInstance } from 'antd';
+import { 
+  HiOutlineLocationMarker, 
+  HiOutlineCurrencyDollar, 
+  HiOutlineClipboardList 
+} from 'react-icons/hi';
 
 interface PreferencesFormProps {
   form?: FormInstance;
@@ -24,23 +28,19 @@ const PreferencesForm: React.FC<PreferencesFormProps> = () => {
       >
         <Input 
           prefix={<HiOutlineLocationMarker className="text-gray-400" />} 
-          placeholder="E.g., College road, maryland," 
+          placeholder="E.g., College road, maryland" 
         />
       </Form.Item>
-{/* TODO turn to an input field  */}
+
       <Form.Item<FormValues>
         name="Budget"
         label="Yearly Budget Range"
-        rules={[{ required: true, message: 'Please select your budget range' }]}
+        rules={[{ required: true, message: 'Please enter your yearly budget range' }]}
       >
-        <Select placeholder="Select your yearly budget">
-          <Select.Option value="150000-200000">₦150,000 - ₦200,000</Select.Option>
-          <Select.Option value="200000-300000">₦200,000 - ₦300,000</Select.Option>
-          <Select.Option value="300000-400000">₦300,000 - ₦400,000</Select.Option>
-          <Select.Option value="400000-500000">₦400,000 - ₦500,000</Select.Option>
-          <Select.Option value="500000-600000">₦500,000 - ₦600,000</Select.Option>
-          <Select.Option value="600000+">Above ₦600,000</Select.Option>
-        </Select>
+        <Input 
+          prefix={<HiOutlineCurrencyDollar className="text-gray-400" />} 
+          placeholder="E.g., ₦300,000 - ₦400,000" 
+        />
       </Form.Item>
 
       <Form.Item<FormValues>
@@ -74,20 +74,10 @@ const PreferencesForm: React.FC<PreferencesFormProps> = () => {
         name="requirements"
         label="Additional Requirements"
       >
-        <Select
-          mode="multiple"
-          placeholder="Select desired features"
-          className="w-full"
-        >
-          <Select.Option value="water">Running Water</Select.Option>
-          <Select.Option value="light">Steady Light</Select.Option>
-          <Select.Option value="generator">Generator</Select.Option>
-          <Select.Option value="tiled">Tiled Floor</Select.Option>
-          <Select.Option value="wardrobe">Wardrobe</Select.Option>
-          <Select.Option value="balcony">Balcony</Select.Option>
-          <Select.Option value="bathroom">Personal Bathroom</Select.Option>
-          <Select.Option value="kitchen">Personal Kitchen</Select.Option>
-        </Select>
+        <Input 
+          prefix={<HiOutlineClipboardList className="text-gray-400" />} 
+          placeholder="E.g., Running Water, Generator, Tiled Floor" 
+        />
       </Form.Item>
     </div>
   );
