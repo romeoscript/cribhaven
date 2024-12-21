@@ -6,6 +6,22 @@ import lady1 from '../assets/People/lady1.svg';
 import lady2 from '../assets/People/lady2.svg';
 import lady3 from '../assets/People/lady3.svg';
 import { FindLodgeForm } from './Forms/FindLodgeForm';
+import { FindRoommateForm } from './Forms/FindRoommateForm';
+import { ListLodgeForm } from './Forms/ListLodgeForm';
+
+// Component to determine which form to render
+const ModalContent = ({ modalId }: { modalId: string }) => {
+  switch (modalId) {
+    case 'find-lodge':
+      return <FindLodgeForm />;
+    case 'find-roommate':
+      return <FindRoommateForm />;
+    case 'list-lodge':
+      return <ListLodgeForm />;
+    default:
+      return null;
+  }
+};
 
 const AnimatedHero = () => {
   const [activeModal, setActiveModal] = useState<string | null>(null);
@@ -33,7 +49,6 @@ const AnimatedHero = () => {
       delay: 0.4
     }
   ];
-
 
   return (
     <div className="relative w-full bg-[#F8F3ED] px-4 py-16" id="home">
@@ -73,7 +88,6 @@ const AnimatedHero = () => {
 
         {/* Main Image Section with Floating Badges */}
         <div className="relative max-w-4xl mx-auto mt-12">
-          {/* Badges remain the same... */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -125,12 +139,10 @@ const AnimatedHero = () => {
         </div>
       </div>
 
-      {/* Modals */}
+      {/* Modal with Dynamic Content */}
       {activeModal && (
         <Modal isOpen={true} onClose={() => setActiveModal(null)}>
-   
-            <FindLodgeForm />
-
+          <ModalContent modalId={activeModal} />
         </Modal>
       )}
     </div>

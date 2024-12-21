@@ -6,7 +6,7 @@ import PreferencesForm from './PreferencesForm';
 import { CheckCircle, AlertTriangle } from 'lucide-react';
 import logo from '../../assets/home/logo.svg';
 
-export const FindLodgeForm = () => {
+export const ListLodgeForm = () => {
   const [form] = Form.useForm();
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -93,19 +93,8 @@ export const FindLodgeForm = () => {
       );
     
       if (!response.ok) {
-        const errorData = await response.json();
-        // Handle the Email Octopus error specifically
-        if (errorData.error === "Failed to subscribe contact to Email Octopus") {
-          try {
-            const details = JSON.parse(errorData.details);
-            if (details.error?.code === 'MEMBER_EXISTS_WITH_EMAIL_ADDRESS') {
-              throw new Error('This email is already registered.');
-            }
-          } catch {
-            throw new Error('Unable to register. Please try again.');
-          }
-        }
-        throw new Error('Unable to submit form. Please try again.');
+        const errorData = await response.text();
+        throw new Error(errorData || 'Submission failed. Please try again.');
       }
   
       const responseData = await response.json();

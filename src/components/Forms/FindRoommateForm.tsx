@@ -1,18 +1,20 @@
 import { useState } from 'react';
 import { Form, Alert } from 'antd';
 import { motion, AnimatePresence } from 'framer-motion';
-import PersonalInfoForm from './PersonalInfoForm';
-import PreferencesForm from './PreferencesForm';
 import { CheckCircle, AlertTriangle } from 'lucide-react';
 import logo from '../../assets/home/logo.svg';
+import PersonalInfoForm from './PersonalInfoForm';
+import PreferencesForm from './RoomiePreferencesForm';
 
-export const FindLodgeForm = () => {
+
+
+
+export const FindRoommateForm = () => {
   const [form] = Form.useForm();
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-
 
   const steps = [
     {
@@ -25,10 +27,8 @@ export const FindLodgeForm = () => {
     }
   ];
 
-
-
   const next = async (e: React.MouseEvent) => {
-    e.preventDefault(); 
+    e.preventDefault();
     try {
       if (currentStep === 0) {
         await form.validateFields([
@@ -43,7 +43,9 @@ export const FindLodgeForm = () => {
         await form.validateFields([
           'location',
           'budget',
-          'roomType'
+          'roommateGender',
+          'description',
+          'preferences'
         ]);
         const values = await form.validateFields();
         await onFinish(values);
@@ -54,35 +56,32 @@ export const FindLodgeForm = () => {
   };
 
   const prev = (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent form submission on back
+    e.preventDefault();
     setCurrentStep(currentStep - 1);
   };
+
   const onFinish = async (values: any) => {
+    console.log(values)
     setIsLoading(true);
     setErrorMessage('');
     try {
-      // Log the entire form values
-      console.log(values)
       const allValues = form.getFieldsValue(true);
-      console.log('ALL FORM VALUES:', allValues);
-  
-    
+      
       const payload = {
         firstName: allValues.FirstName || '',
         lastName: allValues.LastName || '',
         email: allValues.EmailAddress || '',
         phone: allValues.PhoneNumber || '',
         gender: allValues.Gender || '',
-        location: allValues.Location || '',
-        budget: allValues.Budget || '',
-        roomType: allValues.RoomType || '',
-        requirements: typeof allValues.requirements === 'string' 
-        ? allValues.requirements 
-        : allValues.requirements?.join(', ') || ''
+        location: allValues.location || '',
+        budget: allValues.budget || '',
+        roommateGender: allValues.roommateGender || '',
+        description: allValues.description || '',
+    
       };
-  
+
       const response = await fetch(
-        'http://localhost:3000/api/lodge', 
+        'http://localhost:3000/api/roommate',
         {
           method: 'POST',
           headers: {
@@ -91,41 +90,43 @@ export const FindLodgeForm = () => {
           body: JSON.stringify(payload)
         }
       );
-    
+
       if (!response.ok) {
-        const errorData = await response.json();
-        // Handle the Email Octopus error specifically
-        if (errorData.error === "Failed to subscribe contact to Email Octopus") {
-          try {
+        // Try to parse the error response as JSON first
+        try {
+          const errorData = await response.json();
+          // Handle Email Octopus specific error
+          if (errorData.error?.details) {
             const details = JSON.parse(errorData.details);
             if (details.error?.code === 'MEMBER_EXISTS_WITH_EMAIL_ADDRESS') {
-              throw new Error('This email is already registered.');
+              throw new Error('This email address is already registered.');
             }
-          } catch {
-            throw new Error('Unable to register. Please try again.');
           }
+          // If it's another type of error with a message
+          if (errorData.message) {
+            throw new Error(errorData.message);
+          }
+          throw new Error('Unable to submit form. Please try again.');
+        } catch (parseError) {
+          // If JSON parsing fails, try to get the text
+          const errorText = await response.text();
+          throw new Error(errorText || 'Unable to submit form. Please try again.');
         }
-        throw new Error('Unable to submit form. Please try again.');
       }
-  
       const responseData = await response.json();
-      console.log(responseData, 'freaking response');
+      console.log(responseData);
       setIsSubmitted(true);
     } catch (error) {
       console.error('Submission failed:', error);
-      console.error('Submission failed:', error);
-    
-    // Set user-friendly error message
-    setErrorMessage(
-      error instanceof Error 
-        ? error.message 
-        : 'An unexpected error occurred. Please try again.'
-    );
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : 'An unexpected error occurred. Please try again.'
+      );
     } finally {
       setIsLoading(false);
     }
   };
- 
 
   return (
     <div className="max-w-2xl mx-auto p-4 sm:p-8 bg-white rounded-xl shadow-lg">
@@ -138,16 +139,15 @@ export const FindLodgeForm = () => {
             exit={{ opacity: 0 }}
           >
             <div className="text-center mb-8">
-              <img src={logo} alt="Crib Haven" className="h-10 mx-auto mb-6" />
+              <img src={logo} alt="Roommate Finder" className="h-10 mx-auto mb-6" />
               <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                Find Your Perfect Lodge
+                Find Your Perfect Roommate
               </h2>
               <p className="text-gray-600">
-                Tell us about yourself and we'll help you find the perfect place.
+                Tell us about yourself and what you're looking for in a roommate.
               </p>
             </div>
 
-            {/* Error Message Alert */}
             {errorMessage && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
@@ -167,7 +167,6 @@ export const FindLodgeForm = () => {
               </motion.div>
             )}
 
-            {/* Existing steps indicator and form code remains the same */}
             <Form
               form={form}
               layout="vertical"
@@ -221,21 +220,12 @@ export const FindLodgeForm = () => {
             </motion.div>
             
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              Great! We've Got Your Requirements
+              Profile Submitted Successfully!
             </h2>
             <p className="text-gray-600 mb-8">
-              We'll search through available lodges in Enugu that match your preferences.
-              Expect a call or email from our agent within 24 hours with the best options for you.
+              We'll start matching you with potential roommates based on your preferences.
+              You'll receive notifications when we find compatible matches.
             </p>
-            
-            {/* <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => window.location.href = '/available-lodges'}
-              className="bg-green-500 text-white px-8 py-3 rounded-lg hover:bg-green-600 transition-colors"
-            >
-              Browse Available Lodges
-            </motion.button> */}
           </motion.div>
         )}
       </AnimatePresence>
