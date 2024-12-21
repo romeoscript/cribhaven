@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Form } from 'antd';
+import { Form, Alert } from 'antd';
 import { motion, AnimatePresence } from 'framer-motion';
 import PersonalInfoForm from './PersonalInfoForm';
 import PreferencesForm from './PreferencesForm';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, AlertTriangle } from 'lucide-react';
 import logo from '../../assets/home/logo.svg';
 
 export const FindLodgeForm = () => {
@@ -11,6 +11,8 @@ export const FindLodgeForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
 
   const steps = [
     {
@@ -23,10 +25,10 @@ export const FindLodgeForm = () => {
     }
   ];
 
-  const list_id = import.meta.env.VITE_LODGE_LIST_ID;
+
 
   const next = async (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent form submission on continue
+    e.preventDefault(); 
     try {
       if (currentStep === 0) {
         await form.validateFields([
@@ -55,81 +57,63 @@ export const FindLodgeForm = () => {
     e.preventDefault(); // Prevent form submission on back
     setCurrentStep(currentStep - 1);
   };
-
   const onFinish = async (values: any) => {
     setIsLoading(true);
+    setErrorMessage('');
     try {
-      // Get the current form values directly
-      const personalInfo = await form.validateFields([
-        'firstName',
-        'lastName',
-        'email',
-        'phone',
-        'gender'
-      ]);
-      
-      console.log('Personal Info:', personalInfo);
-      console.log('Preferences:', values);
-      
-      const formData = new FormData();
+      // Log the entire form values
+      console.log(values)
+      const allValues = form.getFieldsValue(true);
+      console.log('ALL FORM VALUES:', allValues);
   
-      // Add personal info fields from the first step
-      formData.append('field[FirstName]', personalInfo.firstName || '');
-      formData.append('field[LastName]', personalInfo.lastName || '');
-      formData.append('email_address', personalInfo.email || '');
-      formData.append('field[Phone]', personalInfo.phone || '');
-      formData.append('field[Gender]', personalInfo.gender || '');
-  
-      // Add preferences from the second step
-      formData.append('field[Location]', values.location || '');
-      formData.append('field[Budget]', values.budget || '');
-      formData.append('field[RoomType]', values.roomType || '');
-      formData.append('field[Requirements]', values.requirements?.join(', ') || 'None');
-  
-      // Debug log
-      for (let pair of formData.entries()) {
-        console.log('FormData entry:', pair[0], pair[1]);
-      }
-
-      const response = await fetch(
-        `https://emailoctopus.com/api/1.6/lists/2902da60-b9d0-11ef-9e1a-0dfc70907a13/contacts`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          method: 'POST',
-          body: JSON.stringify({
-            api_key: 'eo_9ec1a19489b56b9baaf07b06a83ad49bc604cc0575ff1f045f5aa8325bcdbd31',
-            email_address: 'romeobourne211@gmail.com',
-            fields: {
-              EmailAddress: "romeobourne211@gmail.com",
-              FirstName: 'shit',
-              LastName: 'romeoscript',
-              // SelectedCourse: selectedCourse,
-              // HowYouHeard: knowlegeOfTechyJaunt,
-              // PhoneNumber: phoneNumber,
-              // Gender: gender,
-            },
-            // tags: ["people"],
-            status: "SUBSCRIBED",
-          }),
     
+      const payload = {
+        firstName: allValues.FirstName || '',
+        lastName: allValues.LastName || '',
+        email: allValues.EmailAddress || '',
+        phone: allValues.PhoneNumber || '',
+        gender: allValues.Gender || '',
+        location: allValues.Location || '',
+        budget: allValues.Budget || '',
+        roomType: allValues.RoomType || '',
+        requirements: allValues.requirements?.join(', ') || ''
+      };
+  
+      console.log('PAYLOAD:', payload);
+      const response = await fetch(
+        'https://cribhavenbackend.onrender.com/api/lodge', 
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload)
         }
       );
-  
+    
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Response error:', errorData);
-        throw new Error('Subscription failed');
+        const errorData = await response.text();
+        throw new Error(errorData || 'Submission failed. Please try again.');
       }
   
+      const responseData = await response.json();
+      console.log(responseData, 'freaking response');
       setIsSubmitted(true);
     } catch (error) {
       console.error('Submission failed:', error);
+      console.error('Submission failed:', error);
+    
+    // Set user-friendly error message
+    setErrorMessage(
+      error instanceof Error 
+        ? error.message 
+        : 'An unexpected error occurred. Please try again.'
+    );
     } finally {
       setIsLoading(false);
     }
   };
+ 
 
   return (
     <div className="max-w-2xl mx-auto p-4 sm:p-8 bg-white rounded-xl shadow-lg">
@@ -151,33 +135,27 @@ export const FindLodgeForm = () => {
               </p>
             </div>
 
-            {/* Custom Steps Indicator */}
-            <div className="flex items-center justify-center mb-8">
-              <div className="flex items-center space-x-3">
-                <div 
-                  className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                    currentStep === 0 ? 'bg-blue-500 text-white' : 
-                    currentStep > 0 ? 'bg-green-500 text-white' : 'bg-gray-200'
-                  }`}
-                >
-                  {currentStep > 0 ? '✓' : '1'}
-                </div>
-                <div className="w-16 h-0.5 bg-gray-200">
-                  <div 
-                    className="h-full bg-green-500 transition-all duration-300"
-                    style={{ width: currentStep > 0 ? '100%' : '0%' }}
-                  />
-                </div>
-                <div 
-                  className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                    currentStep === 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'
-                  }`}
-                >
-                  2
-                </div>
-              </div>
-            </div>
+            {/* Error Message Alert */}
+            {errorMessage && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mb-4"
+              >
+                <Alert 
+                  message={errorMessage}
+                  type="error"
+                  showIcon 
+                  icon={<AlertTriangle className="text-red-500" />}
+                  closable
+                  onClose={() => setErrorMessage('')}
+                  className="max-w-lg mx-auto"
+                />
+              </motion.div>
+            )}
 
+            {/* Existing steps indicator and form code remains the same */}
             <Form
               form={form}
               layout="vertical"
