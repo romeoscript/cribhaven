@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Form, Alert } from 'antd';
 import { motion, AnimatePresence } from 'framer-motion';
 import PersonalInfoForm from './PersonalInfoForm';
-import PreferencesForm from './PreferencesForm';
+import LodgeDetailsForm from './ListPreferencesForm';
 import { CheckCircle, AlertTriangle } from 'lucide-react';
 import logo from '../../assets/home/logo.svg';
 
@@ -13,22 +13,19 @@ export const ListLodgeForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-
   const steps = [
     {
-      title: 'Personal Info',
+      title: 'Owner Info',
       content: <PersonalInfoForm form={form} />
     },
     {
-      title: 'Preferences',
-      content: <PreferencesForm form={form} />
+      title: 'Lodge Details',
+      content: <LodgeDetailsForm form={form} />
     }
   ];
 
-
-
   const next = async (e: React.MouseEvent) => {
-    e.preventDefault(); 
+    e.preventDefault();
     try {
       if (currentStep === 0) {
         await form.validateFields([
@@ -43,7 +40,8 @@ export const ListLodgeForm = () => {
         await form.validateFields([
           'location',
           'budget',
-          'roomType'
+          'description',
+          'caretakerContact'
         ]);
         const values = await form.validateFields();
         await onFinish(values);
@@ -54,35 +52,31 @@ export const ListLodgeForm = () => {
   };
 
   const prev = (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent form submission on back
+    e.preventDefault();
     setCurrentStep(currentStep - 1);
   };
+
   const onFinish = async (values: any) => {
     setIsLoading(true);
     setErrorMessage('');
     try {
-      // Log the entire form values
-      console.log(values)
+      console.log(values);
       const allValues = form.getFieldsValue(true);
-      console.log('ALL FORM VALUES:', allValues);
-  
-    
+      
       const payload = {
         firstName: allValues.FirstName || '',
         lastName: allValues.LastName || '',
         email: allValues.EmailAddress || '',
         phone: allValues.PhoneNumber || '',
         gender: allValues.Gender || '',
-        location: allValues.Location || '',
-        budget: allValues.Budget || '',
-        roomType: allValues.RoomType || '',
-        requirements: typeof allValues.requirements === 'string' 
-        ? allValues.requirements 
-        : allValues.requirements?.join(', ') || ''
+        location: allValues.location || '',
+        budget: allValues.budget || '',
+        description: allValues.description || '',
+        caretakerContact: allValues.caretakerContact || ''
       };
-  
+
       const response = await fetch(
-        'http://localhost:3000/api/lodge', 
+        'http://localhost:3000/api/lodge/list',
         {
           method: 'POST',
           headers: {
@@ -91,30 +85,40 @@ export const ListLodgeForm = () => {
           body: JSON.stringify(payload)
         }
       );
-    
+
       if (!response.ok) {
-        const errorData = await response.text();
-        throw new Error(errorData || 'Submission failed. Please try again.');
+        try {
+          const errorData = await response.json();
+          if (errorData.error?.details) {
+            const details = JSON.parse(errorData.details);
+            if (details.error?.code === 'MEMBER_EXISTS_WITH_EMAIL_ADDRESS') {
+              throw new Error('This email address is already registered.');
+            }
+          }
+          if (errorData.message) {
+            throw new Error(errorData.message);
+          }
+          throw new Error('Unable to list lodge. Please try again.');
+        } catch (parseError) {
+          const errorText = await response.text();
+          throw new Error(errorText || 'Unable to list lodge. Please try again.');
+        }
       }
-  
+
       const responseData = await response.json();
-      console.log(responseData, 'freaking response');
+      console.log(responseData);
       setIsSubmitted(true);
     } catch (error) {
       console.error('Submission failed:', error);
-      console.error('Submission failed:', error);
-    
-    // Set user-friendly error message
-    setErrorMessage(
-      error instanceof Error 
-        ? error.message 
-        : 'An unexpected error occurred. Please try again.'
-    );
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : 'An unexpected error occurred. Please try again.'
+      );
     } finally {
       setIsLoading(false);
     }
   };
- 
 
   return (
     <div className="max-w-2xl mx-auto p-4 sm:p-8 bg-white rounded-xl shadow-lg">
@@ -129,14 +133,13 @@ export const ListLodgeForm = () => {
             <div className="text-center mb-8">
               <img src={logo} alt="Crib Haven" className="h-10 mx-auto mb-6" />
               <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                Find Your Perfect Lodge
+                List Your Lodge
               </h2>
               <p className="text-gray-600">
-                Tell us about yourself and we'll help you find the perfect place.
+                Provide details about your lodge for potential tenants.
               </p>
             </div>
 
-            {/* Error Message Alert */}
             {errorMessage && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
@@ -156,7 +159,6 @@ export const ListLodgeForm = () => {
               </motion.div>
             )}
 
-            {/* Existing steps indicator and form code remains the same */}
             <Form
               form={form}
               layout="vertical"
@@ -210,21 +212,12 @@ export const ListLodgeForm = () => {
             </motion.div>
             
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              Great! We've Got Your Requirements
+              Lodge Listed Successfully!
             </h2>
             <p className="text-gray-600 mb-8">
-              We'll search through available lodges in Enugu that match your preferences.
-              Expect a call or email from our agent within 24 hours with the best options for you.
+              Your lodge has been listed successfully. We'll review the details
+              and make it visible to potential tenants soon.
             </p>
-            
-            {/* <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => window.location.href = '/available-lodges'}
-              className="bg-green-500 text-white px-8 py-3 rounded-lg hover:bg-green-600 transition-colors"
-            >
-              Browse Available Lodges
-            </motion.button> */}
           </motion.div>
         )}
       </AnimatePresence>
