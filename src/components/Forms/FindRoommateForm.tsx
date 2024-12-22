@@ -81,7 +81,7 @@ export const FindRoommateForm = () => {
       };
 
       const response = await fetch(
-        'http://localhost:3000/api/roommate',
+        'https://cribhavenbackend.onrender.com/api/roommate',
         {
           method: 'POST',
           headers: {

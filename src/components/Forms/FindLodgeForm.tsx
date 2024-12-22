@@ -82,7 +82,7 @@ export const FindLodgeForm = () => {
       };
   
       const response = await fetch(
-        'http://localhost:3000/api/lodge', 
+        'https://cribhavenbackend.onrender.com/api/lodge', 
         {
           method: 'POST',
           headers: {
