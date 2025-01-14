@@ -19,7 +19,7 @@ const CoreFeatures = () => {
     {
       icon: <ShieldCheck className="w-12 h-12 text-yellow-400" />,
       title: "Secure Transactions and Payments",
-      description: "Safe Paystack-enabled payments with transparent commission tracking for property owners",
+      description: "Safe payments with transparent commission tracking for property owners or agents ",
       borderColor: "border-yellow-100"
     },
     {

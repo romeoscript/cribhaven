@@ -8,21 +8,23 @@ const HowItWorks = () => {
     {
       number: "1",
       title: "Step 1",
-      description: "Search and compare properties that match your needs, use filters to narrow down options based on your budget, location, and preferences. Each listings comes with detailed information, photos, and reviews to help you decide.",
+      description: `Click on Find a Lodge, Find a Roommate, or List a Property, depending on what you want to use Crib Haven for. Then, fill in the required information and use filters to narrow down options based on your budget, location, and preferences.
+      `,
       image: step1,
       imagePosition: "right"
     },
     {
       number: "2",
       title: "Step 2",
-      description: "Once, you've found a property you like, you can book an inspection to see it in person or virtually. if ready to commit, you can use the following options to reserve the property - (Book Inspection, Add to Wishlist and Pay Now).",
+      description: `Once you're done, click Submit, and a Crib Haven agent will reach out to you within 24 hours with more information about the lodge. You can book an inspection to see it in person or virtually. If you're ready to commit, you can Reserve the Property
+      `,
       image: step2,
       imagePosition: "left"
     },
     {
       number: "3",
       title: "Step 3",
-      description: "Complete you repayments safely through CribHaven and sign the rental agreement online. Once everything is set, you're ready to move in and enjoy your new home with confidence.",
+      description: `Complete you payments safely through CribHaven Agents and sign the rental agreement online. Once everything is set, you're ready to move in and enjoy your new home with confidence.      `,
       image: step3,
       imagePosition: "right"
     }

@@ -59,12 +59,11 @@ const AnimatedHero = () => {
           className="text-center max-w-3xl mx-auto mb-8"
         >
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Find Your Ideal Off-Campus Home - Safe, Simple, Secure
+          Find affordable lodges on crib haven
           </h1>
           
           <p className="text-lg text-gray-600 mb-8">
-            Explore verified listings with no agent fees and secure payments. 
-            Your perfect student housing is just a click away!
+          We connect you with hundreds of agents so you can pick the best prices 
           </p>
 
           {/* Animated Buttons Container */}
