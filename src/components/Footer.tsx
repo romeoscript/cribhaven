@@ -24,13 +24,13 @@ const CTAandFooter = () => {
               Ready to Find Your Perfect Home?
             </h2>
             <p className="text-xl mb-6">Start Now!!!</p>
-            <motion.button
+            {/* <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="bg-green-500 text-white px-8 py-3 rounded-full font-medium"
             >
               Get Started
-            </motion.button>
+            </motion.button> */}
           </div>
         </div>
       </motion.div>
