@@ -7,16 +7,16 @@ const CTAandFooter = () => {
   return (
     <>
       {/* CTA Section */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         className="relative w-full max-w-6xl mx-auto px-4 py-8"
       >
         <div className="relative rounded-2xl overflow-hidden">
           <div className="absolute inset-0 bg-black/40 z-10" />
-          <img 
-            src={find} 
-            alt="Students" 
+          <img
+            src={find}
+            alt="Students"
             className="w-full h-[400px] object-cover"
           />
           <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-white text-center">
@@ -43,7 +43,7 @@ const CTAandFooter = () => {
             <div className="col-span-1 md:col-span-1">
               <img src={logo} alt="CribHaven Logo" className="mb-4" />
               <p className="text-sm text-gray-300 mb-4">
-                Explore verified listings with no agent fees and secure payments. Your perfect student housing is just a click away!
+                We connect you with hundreds of agents so you can pick the best prices
               </p>
               <div className="flex space-x-4">
                 <a href="#" className="text-white hover:text-green-500">
@@ -80,18 +80,18 @@ const CTAandFooter = () => {
                 <li className="flex items-center text-gray-300">
                   <span>📧</span>
                   <a href="mailto:support@cribhaven.com" className="ml-2 hover:text-white">
-                    support@cribhaven.com
+                    support@cribhaven.com.ng
                   </a>
                 </li>
                 <li className="flex items-center text-gray-300">
                   <span>📞</span>
                   <a href="tel:+2348025892569" className="ml-2 hover:text-white">
-                    +234 802 589 2569
+                  0811 914 5027
                   </a>
                 </li>
                 <li className="flex items-center text-gray-300">
                   <span>📍</span>
-                  <span className="ml-2">Port Harcourt</span>
+                  <span className="ml-2">Abuja</span>
                 </li>
               </ul>
             </div>
@@ -99,7 +99,7 @@ const CTAandFooter = () => {
 
           {/* Footer Bottom */}
           <div className="pt-8 border-t border-gray-700 text-center text-sm text-gray-400">
-            <p>© Copyright 2024. All Rights Reserved by CribHaven</p>
+            <p>© Copyright 2025. All Rights Reserved by CribHaven</p>
             <div className="flex justify-center space-x-4 mt-2">
               <a href="#" className="hover:text-white">Privacy policy</a>
               <a href="#" className="hover:text-white">Terms of Service</a>
