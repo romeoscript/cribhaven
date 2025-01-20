@@ -136,7 +136,7 @@ export const ListLodgeForm = () => {
                 List Your Lodge
               </h2>
               <p className="text-gray-600">
-                Provide details about your lodge for potential tenants.
+              Provide details about your lodge to potential tenants and earn sweet commissions!
               </p>
             </div>
 

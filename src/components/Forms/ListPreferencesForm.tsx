@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Input, FormInstance } from 'antd';
-import { 
-  HiOutlineLocationMarker, 
+import {
+  HiOutlineLocationMarker,
   HiOutlineCurrencyDollar,
   HiOutlineClipboardList,
   HiOutlinePhone
@@ -27,9 +27,9 @@ const LodgeDetailsForm: React.FC<LodgeDetailsFormProps> = () => {
         tooltip="Enter the exact location of the lodge"
         rules={[{ required: true, message: 'Please enter the lodge location' }]}
       >
-        <Input 
-          prefix={<HiOutlineLocationMarker className="text-gray-400" />} 
-          placeholder="E.g., 123 College road, maryland" 
+        <Input
+          prefix={<HiOutlineLocationMarker className="text-gray-400" />}
+          placeholder="E.g., 123 College road, maryland"
         />
       </Form.Item>
 
@@ -38,9 +38,9 @@ const LodgeDetailsForm: React.FC<LodgeDetailsFormProps> = () => {
         label="Price"
         rules={[{ required: true, message: 'Please enter the lodge price' }]}
       >
-        <Input 
-          prefix={<HiOutlineCurrencyDollar className="text-gray-400" />} 
-          placeholder="E.g., ₦150,000" 
+        <Input
+          prefix={<HiOutlineCurrencyDollar className="text-gray-400" />}
+          placeholder="E.g., ₦150,000"
         />
       </Form.Item>
 
@@ -52,12 +52,12 @@ const LodgeDetailsForm: React.FC<LodgeDetailsFormProps> = () => {
             <span>Lodge Description</span>
           </div>
         }
-        rules={[{ 
-          required: true, 
-          message: 'Please provide a description of the lodge' 
+        rules={[{
+          required: true,
+          message: 'Please provide a description of the lodge'
         }]}
       >
-        <Input.TextArea 
+        <Input.TextArea
           placeholder="Describe the lodge features, amenities, and any specific requirements..."
           rows={4}
         />
@@ -68,18 +68,21 @@ const LodgeDetailsForm: React.FC<LodgeDetailsFormProps> = () => {
         label={
           <div className="flex items-center gap-2">
             <HiOutlinePhone className="text-gray-400" />
-            <span>Caretaker Contact</span>
+            <span>Caretaker/ Lawyer Contact</span>
           </div>
         }
-        rules={[{ 
-          required: true, 
+        rules={[{
+          required: true,
           message: 'Please provide caretaker contact information'
         }]}
       >
-        <Input 
+        <Input
           placeholder="Enter caretaker's phone number"
         />
       </Form.Item>
+      <p className="text-sm text-gray-500 italic mt-1">
+        NB: We won't reach out to the caretaker/lawyer without your permission.
+      </p>
     </div>
   );
 };
