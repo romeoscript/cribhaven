@@ -28,7 +28,7 @@ export const FindLodgeForm = () => {
 
 
   const next = async (e: React.MouseEvent) => {
-    e.preventDefault(); 
+    e.preventDefault();
     try {
       if (currentStep === 0) {
         await form.validateFields([
@@ -65,8 +65,8 @@ export const FindLodgeForm = () => {
       console.log(values)
       const allValues = form.getFieldsValue(true);
       console.log('ALL FORM VALUES:', allValues);
-  
-    
+
+
       const payload = {
         firstName: allValues.FirstName || '',
         lastName: allValues.LastName || '',
@@ -76,13 +76,13 @@ export const FindLodgeForm = () => {
         location: allValues.Location || '',
         budget: allValues.Budget || '',
         roomType: allValues.RoomType || '',
-        requirements: typeof allValues.requirements === 'string' 
-        ? allValues.requirements 
-        : allValues.requirements?.join(', ') || ''
+        requirement: typeof allValues.requirements === 'string'
+          ? allValues.requirements
+          : allValues.requirements?.join(', ') || ''
       };
-  
+
       const response = await fetch(
-        'https://cribhavenbackend-c76sol8tv-romeoscripts-projects.vercel.app/api/lodge', 
+        'https://cribhavenbackend.onrender.com/api/lodge',
         {
           method: 'POST',
           headers: {
@@ -91,41 +91,41 @@ export const FindLodgeForm = () => {
           body: JSON.stringify(payload)
         }
       );
-    
+
       if (!response.ok) {
         const errorData = await response.json();
         // Handle the Email Octopus error specifically
         if (errorData.error === "Failed to subscribe contact to Email Octopus") {
-          try {
-            const details = JSON.parse(errorData.details);
-            if (details.error?.code === 'MEMBER_EXISTS_WITH_EMAIL_ADDRESS') {
-              throw new Error('This email is already registered.');
-            }
-          } catch {
-            throw new Error('Unable to register. Please try again.');
+          const details = JSON.parse(errorData.details);
+          console.log('Details error:', details.error); // For debugging
+          
+          if (details.error && details.error.code === "MEMBER_EXISTS_WITH_EMAIL_ADDRESS") {
+            setErrorMessage('You have already submitted a lodge request with this email address. Our agent will contact you soon.');
+            return;
           }
         }
-        throw new Error('Unable to submit form. Please try again.');
+        throw new Error('Unable to process your request at this time. Please try again later.');
       }
-  
+
+
       const responseData = await response.json();
       console.log(responseData, 'freaking response');
       setIsSubmitted(true);
     } catch (error) {
       console.error('Submission failed:', error);
       console.error('Submission failed:', error);
-    
-    // Set user-friendly error message
-    setErrorMessage(
-      error instanceof Error 
-        ? error.message 
-        : 'An unexpected error occurred. Please try again.'
-    );
+
+      // Set user-friendly error message
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : 'An unexpected error occurred. Please try again.'
+      );
     } finally {
       setIsLoading(false);
     }
   };
- 
+
 
   return (
     <div className="max-w-2xl mx-auto p-4 sm:p-8 bg-white rounded-xl shadow-lg">
@@ -155,10 +155,10 @@ export const FindLodgeForm = () => {
                 exit={{ opacity: 0, height: 0 }}
                 className="mb-4"
               >
-                <Alert 
+                <Alert
                   message={errorMessage}
                   type="error"
-                  showIcon 
+                  showIcon
                   icon={<AlertTriangle className="text-red-500" />}
                   closable
                   onClose={() => setErrorMessage('')}
@@ -190,15 +190,14 @@ export const FindLodgeForm = () => {
                   type="button"
                   onClick={next}
                   disabled={isLoading}
-                  className={`ml-auto px-6 py-2 ${
-                    isLoading ? 'bg-gray-400' : 'bg-green-500 hover:bg-green-600'
-                  } text-white rounded-lg transition-colors`}
+                  className={`ml-auto px-6 py-2 ${isLoading ? 'bg-gray-400' : 'bg-green-500 hover:bg-green-600'
+                    } text-white rounded-lg transition-colors`}
                 >
-                  {isLoading 
-                    ? 'Processing...' 
-                    : currentStep === steps.length - 1 
-                    ? 'Submit' 
-                    : 'Continue'
+                  {isLoading
+                    ? 'Processing...'
+                    : currentStep === steps.length - 1
+                      ? 'Submit'
+                      : 'Continue'
                   }
                 </button>
               </div>
@@ -219,7 +218,7 @@ export const FindLodgeForm = () => {
             >
               <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
             </motion.div>
-            
+
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
               Great! We've Got Your Requirements
             </h2>
@@ -227,7 +226,7 @@ export const FindLodgeForm = () => {
               We'll search through available lodges in Enugu that match your preferences.
               Expect a call or email from our agent within 24 hours with the best options for you.
             </p>
-            
+
             {/* <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}

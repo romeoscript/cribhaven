@@ -87,22 +87,18 @@ export const ListLodgeForm = () => {
       );
 
       if (!response.ok) {
-        try {
-          const errorData = await response.json();
-          if (errorData.error?.details) {
-            const details = JSON.parse(errorData.details);
-            if (details.error?.code === 'MEMBER_EXISTS_WITH_EMAIL_ADDRESS') {
-              throw new Error('This email address is already registered.');
-            }
+        const errorData = await response.json();
+        // Handle the Email Octopus error specifically
+        if (errorData.error === "Failed to subscribe contact to Email Octopus") {
+          const details = JSON.parse(errorData.details);
+          console.log('Details error:', details.error); 
+          
+          if (details.error && details.error.code === "MEMBER_EXISTS_WITH_EMAIL_ADDRESS") {
+            setErrorMessage('You have already submitted a lodge request with this email address. Our agent will contact you soon.');
+            return;
           }
-          if (errorData.message) {
-            throw new Error(errorData.message);
-          }
-          throw new Error('Unable to list lodge. Please try again.');
-        } catch (parseError) {
-          const errorText = await response.text();
-          throw new Error(errorText || 'Unable to list lodge. Please try again.');
         }
+        throw new Error('Unable to process your request at this time. Please try again later.');
       }
 
       const responseData = await response.json();

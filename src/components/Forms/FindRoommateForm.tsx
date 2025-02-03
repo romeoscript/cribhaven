@@ -45,7 +45,6 @@ export const FindRoommateForm = () => {
           'budget',
           'roommateGender',
           'description',
-          'preferences'
         ]);
         const values = await form.validateFields();
         await onFinish(values);
@@ -77,8 +76,10 @@ export const FindRoommateForm = () => {
         budget: allValues.budget || '',
         roommateGender: allValues.roommateGender || '',
         description: allValues.description || '',
+
     
       };
+      
 
       const response = await fetch(
         'https://cribhavenbackend.onrender.com/api/roommate',
@@ -92,27 +93,20 @@ export const FindRoommateForm = () => {
       );
 
       if (!response.ok) {
-        // Try to parse the error response as JSON first
-        try {
-          const errorData = await response.json();
-          // Handle Email Octopus specific error
-          if (errorData.error?.details) {
-            const details = JSON.parse(errorData.details);
-            if (details.error?.code === 'MEMBER_EXISTS_WITH_EMAIL_ADDRESS') {
-              throw new Error('This email address is already registered.');
-            }
+        const errorData = await response.json();
+        // Handle the Email Octopus error specifically
+        if (errorData.error === "Failed to subscribe contact to Email Octopus") {
+          const details = JSON.parse(errorData.details);
+          console.log('Details error:', details.error); // For debugging
+          
+          if (details.error && details.error.code === "MEMBER_EXISTS_WITH_EMAIL_ADDRESS") {
+            setErrorMessage('You have already submitted a lodge request with this email address. Our agent will contact you soon.');
+            return;
           }
-          // If it's another type of error with a message
-          if (errorData.message) {
-            throw new Error(errorData.message);
-          }
-          throw new Error('Unable to submit form. Please try again.');
-        } catch (parseError) {
-          // If JSON parsing fails, try to get the text
-          const errorText = await response.text();
-          throw new Error(errorText || 'Unable to submit form. Please try again.');
         }
+        throw new Error('Unable to process your request at this time. Please try again later.');
       }
+
       const responseData = await response.json();
       console.log(responseData);
       setIsSubmitted(true);
