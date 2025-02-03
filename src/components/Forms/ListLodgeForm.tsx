@@ -76,7 +76,7 @@ export const ListLodgeForm = () => {
       };
 
       const response = await fetch(
-        'https://cribhavenbackend.onrender.com/api/list',
+        'https://cribhavenbackend.vercel.app/api/list',
         {
           method: 'POST',
           headers: {

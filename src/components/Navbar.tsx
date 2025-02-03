@@ -45,8 +45,12 @@ const Navbar = () => {
     }
   };
 
+  const handleContactClick = () => {
+    window.location.href = "mailto:support@cribhaven.com.ng";  // Replace with your actual email
+  }
+
   return (
-    <motion.div 
+    <motion.div
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       className="bg-white w-full fixed left-0 top-0 z-[1000] shadow-sm"
@@ -54,7 +58,7 @@ const Navbar = () => {
       <nav className="max-w-6xl mx-auto py-4 px-8 flex items-center justify-between">
         {/* Logo */}
         <div className="text-xl font-bold">
-          <img src={logo}alt="CribHaven" className="h-14" />
+          <img src={logo} alt="CribHaven" className="h-14" />
         </div>
 
         {/* Desktop Navigation Links */}
@@ -63,11 +67,10 @@ const Navbar = () => {
             <li key={id}>
               <button
                 onClick={() => scrollToSection(id)}
-                className={`relative px-2 py-1 transition-colors ${
-                  activeSection === id
+                className={`relative px-2 py-1 transition-colors ${activeSection === id
                     ? "text-black font-semibold"
                     : "text-gray-400 hover:text-gray-600"
-                }`}
+                  }`}
               >
                 {label}
                 {activeSection === id && (
@@ -84,7 +87,9 @@ const Navbar = () => {
         </ul>
 
         {/* Contact Button */}
-        <button className="hidden md:block bg-[#1D1C1C] text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition-colors">
+        <button className="hidden md:block bg-[#1D1C1C] text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition-colors"
+          onClick={handleContactClick}
+        >
           Contact Us
         </button>
 
@@ -118,11 +123,10 @@ const Navbar = () => {
                   <li key={id}>
                     <button
                       onClick={() => scrollToSection(id)}
-                      className={`w-full text-left ${
-                        activeSection === id
+                      className={`w-full text-left ${activeSection === id
                           ? "text-black font-semibold"
                           : "text-gray-600"
-                      }`}
+                        }`}
                     >
                       {label}
                     </button>

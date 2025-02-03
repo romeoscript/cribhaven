@@ -82,7 +82,7 @@ export const FindRoommateForm = () => {
       
 
       const response = await fetch(
-        'https://cribhavenbackend.onrender.com/api/roommate',
+        'https://cribhavenbackend.vercel.app/api/roommate',
         {
           method: 'POST',
           headers: {
