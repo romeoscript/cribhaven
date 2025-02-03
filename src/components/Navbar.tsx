@@ -46,7 +46,9 @@ const Navbar = () => {
   };
 
   const handleContactClick = () => {
-    window.location.href = "mailto:support@cribhaven.com.ng";  // Replace with your actual email
+    const subject = "Inquiry from CribHaven Website";
+    const body = "Hello CribHaven team,\n\n";
+    window.location.href = `mailto:romeobourne211@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }
 
   return (
