@@ -57,25 +57,27 @@ interface PaginationProps {
 const ITEMS_PER_PAGE = 10;
 
 const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => (
-  <div className="flex items-center justify-between px-2 py-4">
-    <Button 
-      variant="outline" 
+  <div className="flex flex-col sm:flex-row items-center justify-between px-2 py-4 gap-4">
+    <Button
+      variant="outline"
       onClick={() => onPageChange(currentPage - 1)}
       disabled={currentPage <= 1}
+      className="w-full sm:w-auto"
     >
-      <ChevronLeft className="h-4 w-4" />
+      <ChevronLeft className="h-4 w-4 mr-2" />
       Previous
     </Button>
-    <span className="mx-4">
+    <span className="text-sm">
       Page {currentPage} of {totalPages}
     </span>
-    <Button 
-      variant="outline" 
+    <Button
+      variant="outline"
       onClick={() => onPageChange(currentPage + 1)}
       disabled={currentPage >= totalPages}
+      className="w-full sm:w-auto"
     >
       Next
-      <ChevronRight className="h-4 w-4" />
+      <ChevronRight className="h-4 w-4 ml-2" />
     </Button>
   </div>
 );
@@ -115,16 +117,16 @@ const AdminDashboard: React.FC = () => {
         findRoommateData,
         listLodgeData
       ]: [
-        ApiResponse<SummaryData>,
-        ApiResponse<FindLodgeData[]>,
-        ApiResponse<FindRoommateData[]>,
-        ApiResponse<ListLodgeData[]>
-      ] = await Promise.all([
-        summaryRes.json(),
-        findLodgeRes.json(),
-        findRoommateRes.json(),
-        listLodgeRes.json()
-      ]);
+          ApiResponse<SummaryData>,
+          ApiResponse<FindLodgeData[]>,
+          ApiResponse<FindRoommateData[]>,
+          ApiResponse<ListLodgeData[]>
+        ] = await Promise.all([
+          summaryRes.json(),
+          findLodgeRes.json(),
+          findRoommateRes.json(),
+          listLodgeRes.json()
+        ]);
 
       setSummary(summaryData.data);
       setFindLodgeData(findLodgeData.data || []);
@@ -138,7 +140,7 @@ const AdminDashboard: React.FC = () => {
   };
 
 
- 
+
   const formatDate = (dateString: string): string => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -184,8 +186,67 @@ const AdminDashboard: React.FC = () => {
     return Math.ceil(totalItems / ITEMS_PER_PAGE);
   };
 
+  // Update the Table rendering section with responsive classes
+  const renderTable = (
+    data: any[],
+    columns: { key: string, label: string }[],
+    filename: string
+  ) => {
+    const paginatedData = paginateData(data);
+    const totalPages = getTotalPages(data.length);
+
+    return (
+      <div className="w-full">
+        <TableActions data={data} filename={filename} />
+        {/* Add a container with horizontal scroll */}
+        <div className="relative w-full overflow-auto border rounded-lg">
+          <div className="min-w-full align-middle">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  {columns.map((col) => (
+                    <TableHead
+                      key={col.key}
+                      className="px-4 py-3 text-left text-sm font-medium whitespace-nowrap"
+                    >
+                      {col.label}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {paginatedData.map((item) => (
+                  <TableRow key={item.id}>
+                    {columns.map((col) => (
+                      <TableCell
+                        key={`${item.id}-${col.key}`}
+                        className="px-4 py-3 text-sm whitespace-nowrap"
+                      >
+                        {col.key === 'name'
+                          ? `${item.first_name} ${item.last_name}`
+                          : col.key === 'date'
+                            ? formatDate(item.createdAt)
+                            : item[col.key]}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+      </div>
+    );
+  };
+
+  // Update TableActions to be more responsive
   const TableActions = ({ data, filename }: { data: any[], filename: string }) => (
-    <div className="flex justify-between items-center mb-4">
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
       <Select
         value={sortOrder}
         onValueChange={(value: 'asc' | 'desc') => setSortOrder(value)}
@@ -198,9 +259,10 @@ const AdminDashboard: React.FC = () => {
           <SelectItem value="asc">Oldest First</SelectItem>
         </SelectContent>
       </Select>
-      <Button 
-        variant="outline" 
+      <Button
+        variant="outline"
         onClick={() => downloadCSV(data, filename)}
+        className="w-full sm:w-auto"
       >
         <Download className="h-4 w-4 mr-2" />
         Download CSV
@@ -208,51 +270,8 @@ const AdminDashboard: React.FC = () => {
     </div>
   );
 
-  const renderTable = (
-    data: any[],
-    columns: { key: string, label: string }[],
-    filename: string
-  ) => {
-    const paginatedData = paginateData(data);
-    const totalPages = getTotalPages(data.length);
+  // Update Pagination to be responsive
 
-    return (
-      <div>
-        <TableActions data={data} filename={filename} />
-        <div className="overflow-x-auto border rounded-lg">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                {columns.map((col) => (
-                  <TableHead key={col.key}>{col.label}</TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {paginatedData.map((item) => (
-                <TableRow key={item.id}>
-                  {columns.map((col) => (
-                    <TableCell key={`${item.id}-${col.key}`}>
-                      {col.key === 'name' 
-                        ? `${item.first_name} ${item.last_name}`
-                        : col.key === 'date' 
-                        ? formatDate(item.createdAt)
-                        : item[col.key]}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-        <Pagination 
-          currentPage={currentPage} 
-          totalPages={totalPages} 
-          onPageChange={setCurrentPage} 
-        />
-      </div>
-    );
-  };
 
   if (loading) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
@@ -290,7 +309,7 @@ const AdminDashboard: React.FC = () => {
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
-      
+
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <Card>
@@ -332,15 +351,18 @@ const AdminDashboard: React.FC = () => {
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="findLodge">
             <Search className="w-4 h-4 mr-2" />
-            Find Lodge Requests
+            <span className="hidden sm:inline">Find Lodge Requests</span>
+            <span className="sm:hidden">Lodge</span>
           </TabsTrigger>
           <TabsTrigger value="findRoommate">
             <Users className="w-4 h-4 mr-2" />
-            Find Roommate Requests
+            <span className="hidden sm:inline">Find Roommate Requests</span>
+            <span className="sm:hidden">Roommate</span>
           </TabsTrigger>
           <TabsTrigger value="listLodge">
             <ListPlus className="w-4 h-4 mr-2" />
-            Lodge Listings
+            <span className="hidden sm:inline">Lodge Listings</span>
+            <span className="sm:hidden">Listings</span>
           </TabsTrigger>
         </TabsList>
 
