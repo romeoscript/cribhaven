@@ -82,7 +82,7 @@ export const FindLodgeForm = () => {
       };
 
       const response = await fetch(
-        'https://cribhavenbackend.vercel.app/api/lodge',
+        'https://cribhavenbackend.onrender.com/api/lodge',
         {
           method: 'POST',
           headers: {
