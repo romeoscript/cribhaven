@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
-import { Users, Search, ListPlus } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Users, Search, ListPlus, Download, ChevronLeft, ChevronRight } from 'lucide-react';
+import Papa from 'papaparse';
 
 // Interface definitions
 interface SummaryData {
@@ -45,6 +48,38 @@ interface ApiResponse<T> {
   data: T;
   error?: string;
 }
+interface PaginationProps {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}
+
+const ITEMS_PER_PAGE = 10;
+
+const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => (
+  <div className="flex items-center justify-between px-2 py-4">
+    <Button 
+      variant="outline" 
+      onClick={() => onPageChange(currentPage - 1)}
+      disabled={currentPage <= 1}
+    >
+      <ChevronLeft className="h-4 w-4" />
+      Previous
+    </Button>
+    <span className="mx-4">
+      Page {currentPage} of {totalPages}
+    </span>
+    <Button 
+      variant="outline" 
+      onClick={() => onPageChange(currentPage + 1)}
+      disabled={currentPage >= totalPages}
+    >
+      Next
+      <ChevronRight className="h-4 w-4" />
+    </Button>
+  </div>
+);
+
 
 const AdminDashboard: React.FC = () => {
   const [summary, setSummary] = useState<SummaryData>({
@@ -57,6 +92,9 @@ const AdminDashboard: React.FC = () => {
   const [findRoommateData, setFindRoommateData] = useState<FindRoommateData[]>([]);
   const [listLodgeData, setListLodgeData] = useState<ListLodgeData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+
 
   useEffect(() => {
     fetchData();
@@ -111,9 +149,143 @@ const AdminDashboard: React.FC = () => {
     });
   };
 
+
+  // Function to download CSV
+  const downloadCSV = (data: any[], filename: string) => {
+    const csv = Papa.unparse(data);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    if (link.download !== undefined) {
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
+  const sortDataByDate = <T extends BaseLodgeData>(data: T[]): T[] => {
+    return [...data].sort((a, b) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      return sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
+    });
+  };
+
+  // Function to paginate data
+  const paginateData = <T extends BaseLodgeData>(data: T[]): T[] => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return sortDataByDate(data).slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  };
+
+  // Calculate total pages
+  const getTotalPages = (totalItems: number): number => {
+    return Math.ceil(totalItems / ITEMS_PER_PAGE);
+  };
+
+  const TableActions = ({ data, filename }: { data: any[], filename: string }) => (
+    <div className="flex justify-between items-center mb-4">
+      <Select
+        value={sortOrder}
+        onValueChange={(value: 'asc' | 'desc') => setSortOrder(value)}
+      >
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Sort by date" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="desc">Newest First</SelectItem>
+          <SelectItem value="asc">Oldest First</SelectItem>
+        </SelectContent>
+      </Select>
+      <Button 
+        variant="outline" 
+        onClick={() => downloadCSV(data, filename)}
+      >
+        <Download className="h-4 w-4 mr-2" />
+        Download CSV
+      </Button>
+    </div>
+  );
+
+  const renderTable = (
+    data: any[],
+    columns: { key: string, label: string }[],
+    filename: string
+  ) => {
+    const paginatedData = paginateData(data);
+    const totalPages = getTotalPages(data.length);
+
+    return (
+      <div>
+        <TableActions data={data} filename={filename} />
+        <div className="overflow-x-auto border rounded-lg">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                {columns.map((col) => (
+                  <TableHead key={col.key}>{col.label}</TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {paginatedData.map((item) => (
+                <TableRow key={item.id}>
+                  {columns.map((col) => (
+                    <TableCell key={`${item.id}-${col.key}`}>
+                      {col.key === 'name' 
+                        ? `${item.first_name} ${item.last_name}`
+                        : col.key === 'date' 
+                        ? formatDate(item.createdAt)
+                        : item[col.key]}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+        <Pagination 
+          currentPage={currentPage} 
+          totalPages={totalPages} 
+          onPageChange={setCurrentPage} 
+        />
+      </div>
+    );
+  };
+
   if (loading) {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
+  const findLodgeColumns = [
+    { key: 'name', label: 'Name' },
+    { key: 'email_address', label: 'Email' },
+    { key: 'phone_number', label: 'Phone' },
+    { key: 'location', label: 'Location' },
+    { key: 'budget', label: 'Budget' },
+    { key: 'room_type', label: 'Room Type' },
+    { key: 'date', label: 'Date' }
+  ];
+
+  const findRoommateColumns = [
+    { key: 'name', label: 'Name' },
+    { key: 'email_address', label: 'Email' },
+    { key: 'phone_number', label: 'Phone' },
+    { key: 'location', label: 'Location' },
+    { key: 'budget', label: 'Budget' },
+    { key: 'roommate_gender', label: 'Preferred Gender' },
+    { key: 'date', label: 'Date' }
+  ];
+
+  const listLodgeColumns = [
+    { key: 'name', label: 'Name' },
+    { key: 'email_address', label: 'Email' },
+    { key: 'phone_number', label: 'Phone' },
+    { key: 'location', label: 'Location' },
+    { key: 'budget', label: 'Budget' },
+    { key: 'caretaker_contact', label: 'Caretaker Contact' },
+    { key: 'date', label: 'Date' }
+  ];
 
   return (
     <div className="p-6">
@@ -173,98 +345,18 @@ const AdminDashboard: React.FC = () => {
         </TabsList>
 
         <TabsContent value="findLodge">
-          <div className="overflow-x-auto border rounded-lg">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Phone</TableHead>
-                  <TableHead>Location</TableHead>
-                  <TableHead>Budget</TableHead>
-                  <TableHead>Room Type</TableHead>
-                  <TableHead>Date</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {findLodgeData.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell>{`${item.first_name} ${item.last_name}`}</TableCell>
-                    <TableCell>{item.email_address}</TableCell>
-                    <TableCell>{item.phone_number}</TableCell>
-                    <TableCell>{item.location}</TableCell>
-                    <TableCell>{item.budget}</TableCell>
-                    <TableCell>{item.room_type}</TableCell>
-                    <TableCell>{formatDate(item.createdAt)}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+          {renderTable(findLodgeData, findLodgeColumns, 'lodge_requests.csv')}
         </TabsContent>
 
         <TabsContent value="findRoommate">
-          <div className="overflow-x-auto border rounded-lg">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Phone</TableHead>
-                  <TableHead>Location</TableHead>
-                  <TableHead>Budget</TableHead>
-                  <TableHead>Preferred Gender</TableHead>
-                  <TableHead>Date</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {findRoommateData.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell>{`${item.first_name} ${item.last_name}`}</TableCell>
-                    <TableCell>{item.email_address}</TableCell>
-                    <TableCell>{item.phone_number}</TableCell>
-                    <TableCell>{item.location}</TableCell>
-                    <TableCell>{item.budget}</TableCell>
-                    <TableCell>{item.roommate_gender}</TableCell>
-                    <TableCell>{formatDate(item.createdAt)}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+          {renderTable(findRoommateData, findRoommateColumns, 'roommate_requests.csv')}
         </TabsContent>
 
         <TabsContent value="listLodge">
-          <div className="overflow-x-auto border rounded-lg">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Phone</TableHead>
-                  <TableHead>Location</TableHead>
-                  <TableHead>Budget</TableHead>
-                  <TableHead>Caretaker Contact</TableHead>
-                  <TableHead>Date</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {listLodgeData.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell>{`${item.first_name} ${item.last_name}`}</TableCell>
-                    <TableCell>{item.email_address}</TableCell>
-                    <TableCell>{item.phone_number}</TableCell>
-                    <TableCell>{item.location}</TableCell>
-                    <TableCell>{item.budget}</TableCell>
-                    <TableCell>{item.caretaker_contact}</TableCell>
-                    <TableCell>{formatDate(item.createdAt)}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+          {renderTable(listLodgeData, listLodgeColumns, 'lodge_listings.csv')}
         </TabsContent>
       </Tabs>
+
     </div>
   );
 };
