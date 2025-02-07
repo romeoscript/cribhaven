@@ -103,10 +103,10 @@ const AdminDashboard: React.FC = () => {
   const fetchData = async (): Promise<void> => {
     try {
       const [summaryRes, findLodgeRes, findRoommateRes, listLodgeRes] = await Promise.all([
-        fetch('https://www.cribhaven.com.ng/api/summary'),
-        fetch('https://www.cribhaven.com.ng/api/getlodge'),
-        fetch('https://www.cribhaven.com.ng/api/getroommate'),
-        fetch('https://www.cribhaven.com.ng/api/getlistings')
+        fetch('https://cribhavenbackend.vercel.app/api/summary'),
+        fetch('https://cribhavenbackend.vercel.app/api/getlodge'),
+        fetch('https://cribhavenbackend.vercel.app/api/getroommate'),
+        fetch('https://cribhavenbackend.vercel.app/api/getlistings')
       ]);
 
       const [
